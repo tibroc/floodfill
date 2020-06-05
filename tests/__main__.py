@@ -1,5 +1,6 @@
 import os
 import unittest
+import tempfile
 
 import numpy
 import rasterio
@@ -13,17 +14,31 @@ TEST_FILE = os.path.join(
 
 class TestDataIo(unittest.TestCase):
 
+    def setUp(self):
+        self.data, self.profile = floodfill.read_data(TEST_FILE)
+
     def test_reading(self):
-        data, profile = floodfill.read_data(TEST_FILE)
-        self.assertIsInstance(profile, rasterio.profiles.Profile)
-        self.assertIsNotNone(data)
-        self.assertListEqual([profile['height'], profile['width']],
-                             list(data.shape))
+        self.assertIsInstance(self.profile, rasterio.profiles.Profile)
+        self.assertIsNotNone(self.data)
+        self.assertListEqual([self.profile['height'], self.profile['width']],
+                             list(self.data.shape))
+
+    def test_writing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file_name = os.path.join(tmp, 'test.tif')
+            floodfill.write_data(file_name, self.data, self.profile)
+            self.assertTrue(os.path.isfile(file_name))
+
+            # read data again and check if it is the same
+            data_tmp, profile_tmp = floodfill.read_data(file_name)
+            self.assertTrue(numpy.all(data_tmp == self.data))
 
 
 class TestFloodfill(unittest.TestCase):
 
     def test_cleaning(self):
+        """Check if data cleaning works as intended.
+        """
         data, _ = floodfill.read_data(TEST_FILE)
         lower = 1  # lower fire value bound
         upper = 366  # upper fire value bound
@@ -35,6 +50,9 @@ class TestFloodfill(unittest.TestCase):
         self.assertGreaterEqual(min_burned, lower)
 
     def test_get_neighbors(self):
+        """Check if neighbors are always correctly identified,
+        even when on the borders.
+        """
         test_array = numpy.zeros((3, 3))
         sum_true = []
         for i in range(0, 3):
@@ -47,11 +65,15 @@ class TestFloodfill(unittest.TestCase):
         self.assertListEqual(sum_true, [3, 5, 3, 5, 8, 5, 3, 5, 3])
 
     def test_floodfill(self):
+        """Test the floodfill algorithm itself.
+        """
         data, _ = floodfill.read_data(TEST_FILE)
         data = floodfill.isolate_burned_pixels(data, 366, 1)
         ids, burn_dates = floodfill.floodfill(data, 3)
-        self.assertEqual(ids.max(), 929)
-        self.assertEqual(numpy.sum(burn_dates != data), 0)
+        self.assertEqual(ids.max(), 929)  # correct number of fires found?
+
+        # are the burn dates still the same as in the input?
+        self.assertTrue(numpy.all(burn_dates == data))
 
 
 if __name__ == '__main__':
