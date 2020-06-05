@@ -1,0 +1,15 @@
+language: python
+
+dist: bionic
+
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+
+install:
+  - pip install bandit flake8
+
+script:
+  - flake8 floodfill
+  - bandit -r floodfill
