@@ -67,45 +67,51 @@ def parse_command_line():
 
     parser.add_argument('--output-folder',
                         required=True,
-                        help='Folder where the generated raster images '
+                        help='Folder where the resulting raster images '
                         'will be saved')
 
     parser.add_argument('--cut-off',
-                        help='Cut off value in days for burned pixels '
-                        'belonging to the same event.',
                         type=int,
-                        default=8)
+                        default=8,
+                        help='Cut off value in days for burned pixels '
+                        'belonging to the same event – defaults to 8.')
 
     parser.add_argument('--lower-value',
-                        help='Minimum value of a burned pixel.',
                         type=int,
-                        default=1)
+                        default=1,
+                        help='Minimum value of a burned pixel.'
+                        'All data points below this value will be set to zero'
+                        ' – defaults to 1.')
 
     parser.add_argument('--upper-value',
-                        help='Maximum value of a burned pixel.',
                         type=int,
-                        default=366)
+                        default=366,
+                        help='Maximum value of a burned pixel.'
+                        'All data points above this value will be set to zero'
+                        ' – defaults to 366.')
 
     parser.add_argument('--file-extension',
-                        help='Extension of the files to read, e.g.'
-                        '".tif" or ".tiff"',
                         type=str,
-                        default='.tif')
+                        default='.tif',
+                        help='Extension of the files to read, e.g.'
+                        '".tif" or ".tiff" – defaults to ".tif".')
 
     parser.add_argument('-b',
                         dest='save_bd',
                         action='store_true',
-                        help='Write also the output burn dates to disc.')
+                        help='If set, write also the output'
+                        'burn dates to disc.')
 
     parser.add_argument('-r',
                         dest='recursive',
                         action='store_true',
-                        help='Process entire folders and subfolders.')
+                        help='If set, process entire folders and subfolders.')
 
     parser.add_argument('-v',
                         dest='verbose',
                         action='store_true',
-                        help='Keep talking while processing.')
+                        help='Keep talking while processing'
+                        ' – **very** verbose.')
 
     return parser.parse_args()
 
