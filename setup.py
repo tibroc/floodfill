@@ -30,6 +30,6 @@ setup(
         'Topic :: Scientific/Engineering :: GIS',
     ],
     install_requires=read('requirements.txt').split(),
-    long_description=read('README.md'),
-    long_description_content_type='text/markdown',
+    long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
 )
