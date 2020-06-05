@@ -9,7 +9,9 @@ python:
 
 install:
   - pip install bandit flake8
+  - python setup.py install
 
 script:
   - flake8 floodfill
   - bandit -r floodfill
+  - python -m unittest --verbose tests
