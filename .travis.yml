@@ -8,10 +8,11 @@ python:
   - 3.8
 
 install:
-  - pip install bandit flake8
+  - pip install bandit flake8 coverage
   - python setup.py install
 
 script:
   - flake8 floodfill
   - bandit -r floodfill
-  - python -m unittest --verbose tests
+  - coverage run --source=floodfill -m tests --verbose
+  - coverage report -m 
