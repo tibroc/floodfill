@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+'''Floodfill algorithm
+:copyright: 2020, Timo Nogueira Brockmeyer
+:license: MIT
+'''
+
 import logging
 
 import numpy
