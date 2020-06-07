@@ -41,10 +41,14 @@ def process_file(file, config):
 
     # write data
     fname, ext = os.path.splitext(os.path.basename(file))
+
+    # save burndates if required
     if config.save_bd:
         out_path_bds = os.path.join(config.output_folder,
                                     f"{fname}-floodfill_burndates{ext}")
-        floodfill.write_data(out_path_bds, fire_ids, profile)
+        floodfill.write_data(out_path_bds, burn_dates, profile)
+
+    # save patch ids
     out_path_ids = os.path.join(config.output_folder,
                                 f"{fname}-floodfill_ids{ext}")
     floodfill.write_data(out_path_ids, fire_ids, profile)
