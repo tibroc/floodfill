@@ -82,7 +82,10 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">floodfill</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#parallelization">Parallelization</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-floodfill">Python API</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
@@ -183,7 +186,20 @@ The <code class="docutils literal notranslate"><span class="pre">-h</span></code
 python -m floodfill --input<span class="o">=</span>tests/test_data.tif --output-folder<span class="o">=</span>output -b
 </pre></div>
 </div>
+<div class="section" id="parallelization">
+<h3>Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline">¶</a></h3>
+<p>If you have several files to process (in recursive mode), you can parallelize
+processing by setting <code class="docutils literal notranslate"><span class="pre">--n-workers</span></code> to a value that suits your number of cores
+(if you specify a higher number of workers than you have cores, the program will
+automatically take the maximum number of cores available).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir output
+python -m floodfill --input<span class="o">=</span>tests/test_data.tif<span class="se">\</span>
+    --output-folder<span class="o">=</span>output<span class="se">\</span>
+    --n-workers<span class="o">=</span><span class="m">4</span>
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
+</div>
 </div>
 </div>
 <div class="section" id="module-floodfill">
