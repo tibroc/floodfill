@@ -40,3 +40,19 @@ A simple test run can be done like this:
 
     mkdir output
     python -m floodfill --input=tests/test_data.tif --output-folder=output -b
+
+
+Parallelization
+~~~~~~~~~~~~~~~
+
+If you have several files to process (in recursive mode), you can parallelize
+processing by setting ``--n-workers`` to a value that suits your number of cores
+(if you specify a higher number of workers than you have cores, the program will
+automatically take the maximum number of cores available).
+
+.. code-block:: bash
+
+    mkdir output
+    python -m floodfill --input=tests/test_data.tif\
+        --output-folder=output\
+        --n-workers=4

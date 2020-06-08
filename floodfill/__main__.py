@@ -15,12 +15,13 @@ III-160 . 10.1109/IGARSS.2009.5417974.
 import argparse
 import glob
 import logging
+import multiprocessing
 import os
 
 import floodfill
 
 
-def process_file(file, config):
+def process_file(file):
     """Read and process one file and write the results
     to disc in the same format as the input file.
 
@@ -100,6 +101,13 @@ def parse_command_line():
                         help='Extension of the files to read, e.g.'
                         '".tif" or ".tiff" – defaults to ".tif".')
 
+    parser.add_argument('--n-workers',
+                        type=int,
+                        default=1,
+                        help='Number of workers (max. = number of cpu cores). '
+                        'If -r is set, input files can be processed in '
+                        'parallel if number of workers is set > 1.')
+
     parser.add_argument('-b',
                         dest='save_bd',
                         action='store_true',
@@ -123,6 +131,7 @@ def parse_command_line():
 def main():
     """The main function of the program.
     """
+    global config
     config = parse_command_line()
 
     # Setup logging
@@ -131,13 +140,22 @@ def main():
 
     # process whole folder
     if config.recursive:
+
+        # get list of files
         pattern = os.path.join(config.input, '**/*' + config.file_extension)
-        for file in glob.glob(pattern, recursive=True):
-            process_file(file, config)
-        return
+        files = [f for f in glob.glob(pattern, recursive=True)]
+
+        # determine number of workers
+        cpus = multiprocessing.cpu_count()
+        n_workers = cpus if config.n_workers > cpus else config.n_workers
+        logging.info(f"Using {n_workers} workers.")
+
+        # process files
+        with multiprocessing.Pool(n_workers) as pool:
+            pool.map(process_file, files)
 
     # process one file only
-    process_file(config.input, config)
+    process_file(config.input)
 
 
 if __name__ == "__main__":
