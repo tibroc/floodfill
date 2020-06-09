@@ -17,8 +17,9 @@ def read_data(file):
 
     :param file: file path
     :type file: str
-    :return: an array of the raster data
-    :rtype: numpy.ndarray
+    :return: a tuple of length two, containing an array
+        of the raster data and the raster profile
+    :rtype: tuple
     """
     with rasterio.open(file) as f:
         data = f.read(1)
