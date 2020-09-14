@@ -3,7 +3,7 @@ attrs==20.2.0
 click==7.1.2
 click-plugins==1.1.1
 cligj==0.5.0
-numpy==1.19.1
+numpy==1.19.2
 pyparsing==2.4.7
 rasterio==1.1.5
 snuggs==1.4.7
