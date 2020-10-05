@@ -5,5 +5,5 @@ click-plugins==1.1.1
 cligj==0.5.0
 numpy==1.19.1
 pyparsing==2.4.7
-rasterio==1.1.5
+rasterio==1.1.7
 snuggs==1.4.7
