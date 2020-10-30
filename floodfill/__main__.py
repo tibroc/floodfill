@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 '''
 Floodfill algorithm for fire event detection
@@ -18,7 +17,7 @@ import logging
 import multiprocessing
 import os
 
-import floodfill
+from floodfill import utils
 
 
 def process_file(file):
@@ -32,13 +31,15 @@ def process_file(file):
     :type config: argparse.Namespace
     """
     # read data
-    data, profile = floodfill.read_data(file)
+    data, profile = utils.read_data(file)
 
     # process data
-    data = floodfill.isolate_burned_pixels(data,
-                                           config.upper_value,
-                                           config.lower_value)
-    fire_ids, burn_dates = floodfill.floodfill(data, config.cut_off)
+    data = utils.isolate_burned_pixels(data,
+                                       config.upper_value,
+                                       config.lower_value)
+    fire_ids, burn_dates = utils.run_algo(name=config.algorithm,
+                                          raster=data,
+                                          cut_off=config.cut_off)
 
     # write data
     fname, ext = os.path.splitext(os.path.basename(file))
@@ -47,12 +48,12 @@ def process_file(file):
     if config.save_bd:
         out_path_bds = os.path.join(config.output_folder,
                                     f"{fname}-floodfill_burndates{ext}")
-        floodfill.write_data(out_path_bds, burn_dates, profile)
+        utils.write_data(out_path_bds, burn_dates, profile)
 
     # save patch ids
     out_path_ids = os.path.join(config.output_folder,
                                 f"{fname}-floodfill_ids{ext}")
-    floodfill.write_data(out_path_ids, fire_ids, profile)
+    utils.write_data(out_path_ids, fire_ids, profile)
 
 
 def parse_command_line():
@@ -98,6 +99,13 @@ def parse_command_line():
     parser.add_argument('--file-extension',
                         type=str,
                         default='.tif',
+                        help='Extension of the files to read, e.g.'
+                        '".tif" or ".tiff" – defaults to ".tif".')
+
+    parser.add_argument('--algorithm',
+                        type=str,
+                        choices={'nogueira_etal'},
+                        default='nogueira_etal',
                         help='Extension of the files to read, e.g.'
                         '".tif" or ".tiff" – defaults to ".tif".')
 
