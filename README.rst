@@ -3,6 +3,9 @@ floodfill
 
 .. image:: https://travis-ci.com/tibroc/floodfill.svg?branch=master
     :target: https://travis-ci.com/tibroc/floodfill
+.. image:: https://coveralls.io/repos/github/tibroc/floodfill/badge.svg?branch=master
+    :target: https://coveralls.io/github/tibroc/floodfill?branch=master
+
 
 This is an implementation of the floodfill algorithm for fire event detection as described in:
 

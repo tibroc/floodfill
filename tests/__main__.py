@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+'''Floodfill algorithm
+:copyright: 2020, Timo Nogueira Brockmeyer
+:license: MIT
+'''
+
 import os
 import unittest
 import tempfile
@@ -5,7 +11,7 @@ import tempfile
 import numpy
 import rasterio
 
-from floodfill import utils
+from floodfill import utils, __main__
 from floodfill.algorithms import nogueira_etal
 
 
@@ -50,6 +56,30 @@ class TestCleaning(unittest.TestCase):
         self.assertLessEqual(data.max(), upper)
         min_burned = data[data != 0].min()
         self.assertGreaterEqual(min_burned, lower)
+
+
+class TestMain(unittest.TestCase):
+
+    def test_process_file(self):
+        data, _ = utils.read_data(TEST_FILE)
+        with tempfile.TemporaryDirectory() as tmp:
+            config = __main__.parse_command_line(
+                [f'--input={TEST_FILE}', f'--output-folder={tmp}', '-b'])
+            __main__.process_file(config.input, config=config)
+
+            # construct file names
+            bd_file = __main__._get_filename(config.output_folder,
+                                             config.input,
+                                             'floodfill_burndates')
+            id_file = __main__._get_filename(config.output_folder,
+                                             config.input,
+                                             'floodfill_ids')
+            self.assertTrue(os.path.isfile(bd_file))
+            self.assertTrue(os.path.isfile(id_file))
+
+            # read data again and check if it is the same
+            burn_dates, _ = utils.read_data(bd_file)
+            self.assertTrue(numpy.all(burn_dates == data))
 
 
 class TestNogueiraEtal(unittest.TestCase):

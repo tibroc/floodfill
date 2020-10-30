@@ -12,15 +12,17 @@ III-160 . 10.1109/IGARSS.2009.5417974.
 '''
 
 import argparse
+import functools
 import glob
 import logging
 import multiprocessing
 import os
+import sys
 
 from floodfill import utils
 
 
-def process_file(file):
+def process_file(file, config):
     """Read and process one file and write the results
     to disc in the same format as the input file.
 
@@ -41,22 +43,35 @@ def process_file(file):
                                           raster=data,
                                           cut_off=config.cut_off)
 
-    # write data
-    fname, ext = os.path.splitext(os.path.basename(file))
-
     # save burndates if required
     if config.save_bd:
-        out_path_bds = os.path.join(config.output_folder,
-                                    f"{fname}-floodfill_burndates{ext}")
+        out_path_bds = _get_filename(
+            config.output_folder, file, 'floodfill_burndates')
         utils.write_data(out_path_bds, burn_dates, profile)
 
     # save patch ids
-    out_path_ids = os.path.join(config.output_folder,
-                                f"{fname}-floodfill_ids{ext}")
+    out_path_ids = _get_filename(
+        config.output_folder, file, 'floodfill_ids')
     utils.write_data(out_path_ids, fire_ids, profile)
 
 
-def parse_command_line():
+def _get_filename(folder, file, insertion):
+    """Helper function to construct the filename in process_file()
+
+    :param folder: folder of the file
+    :type folder: str
+    :param file: file name
+    :type file: str
+    :param insertion: insertion into the file name
+    :type insertion: str
+    :return: the new file name including path
+    :rtype: str
+    """
+    fname, ext = os.path.splitext(os.path.basename(file))
+    return os.path.join(folder, f"{fname}-{insertion}{ext}")
+
+
+def parse_command_line(args):
     """Parse the arguments from the command line.
 
     :return: the argument namespace
@@ -133,14 +148,13 @@ def parse_command_line():
                         help='Keep talking while processing'
                         ' – **very** verbose.')
 
-    return parser.parse_args()
+    return parser.parse_args(args)
 
 
 def main():
     """The main function of the program.
     """
-    global config
-    config = parse_command_line()
+    config = parse_command_line(sys.argv[1:])
 
     # Setup logging
     logging.basicConfig(
@@ -160,10 +174,10 @@ def main():
 
         # process files
         with multiprocessing.Pool(n_workers) as pool:
-            pool.map(process_file, files)
+            pool.map(functools.partial(process_file, config=config), files)
 
-    # process one file only
-    process_file(config.input)
+    # process only one file
+    process_file(config.input, config=config)
 
 
 if __name__ == "__main__":
