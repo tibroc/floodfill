@@ -9,11 +9,22 @@
 Python API
 ----------
 
+User Interface
+~~~~~~~~~~~~~~
+
 .. automodule:: floodfill
    :members:
    :undoc-members:
    :show-inheritance:
 
+
+Algorithms
+~~~~~~~~~~
+
+.. automodule:: floodfill.algorithms.nogueira_etal
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Indices and tables

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-'''Floodfill algorithm
+"""Floodfill algorithm as used in Nogueira et al.
+
 :copyright: 2020, Timo Nogueira Brockmeyer
 :license: MIT
-'''
+"""
 
 import logging
 
@@ -39,7 +40,8 @@ def _get_neighbors(x, y, data, distance=1):
 
 
 def run(raster, cut_off):
-    """The floodfill agorithm as described in the paper.
+    """The floodfill agorithm as described in the paper
+    and implemented in Nogueira et al..
 
     :param raster: the raster data
     :type raster: numpy.ndarray

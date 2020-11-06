@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Floodfill algorithm for fire event detection
 
 This program implements the algorithm as described in:
@@ -7,9 +7,10 @@ Archibald, Sally & Roy, David. (2009).
 Identifying individual fires from satellite-derived burned area data.
 III-160 . 10.1109/IGARSS.2009.5417974.
 ~~~~~~~~~~~~~~~~~~~~~~
+
 :copyright: 2020, Timo Nogueira Brockmeyer
 :license: MIT
-'''
+"""
 
 import argparse
 import functools
@@ -19,7 +20,7 @@ import multiprocessing
 import os
 import sys
 
-from floodfill import utils
+import floodfill
 
 
 def process_file(file, config):
@@ -33,26 +34,26 @@ def process_file(file, config):
     :type config: argparse.Namespace
     """
     # read data
-    data, profile = utils.read_data(file)
+    data, profile = floodfill.read_data(file)
 
     # process data
-    data = utils.isolate_burned_pixels(data,
-                                       config.upper_value,
-                                       config.lower_value)
-    fire_ids, burn_dates = utils.run_algo(name=config.algorithm,
-                                          raster=data,
-                                          cut_off=config.cut_off)
+    data = floodfill.isolate_burned_pixels(data,
+                                           config.upper_value,
+                                           config.lower_value)
+    fire_ids, burn_dates = floodfill.run_algo(name=config.algorithm,
+                                              raster=data,
+                                              cut_off=config.cut_off)
 
     # save burndates if required
     if config.save_bd:
         out_path_bds = _get_filename(
             config.output_folder, file, 'floodfill_burndates')
-        utils.write_data(out_path_bds, burn_dates, profile)
+        floodfill.write_data(out_path_bds, burn_dates, profile)
 
     # save patch ids
     out_path_ids = _get_filename(
         config.output_folder, file, 'floodfill_ids')
-    utils.write_data(out_path_ids, fire_ids, profile)
+    floodfill.write_data(out_path_ids, fire_ids, profile)
 
 
 def _get_filename(folder, file, insertion):
