@@ -1,5 +1,5 @@
 affine==2.3.0
-attrs==20.2.0
+attrs==22.2.0
 click==7.1.2
 click-plugins==1.1.1
 cligj==0.7.0
